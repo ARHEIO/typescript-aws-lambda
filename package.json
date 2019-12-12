@@ -1,0 +1,24 @@
+{
+  "name": "typescript-lambda-template",
+  "version": "1.0.0",
+  "description": "A base package for lambdas that compiles to javascript",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf dist ; webpack",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:live": "npm run build ; ./scripts/test.sh dummyKey",
+    "publish": "npm run build ; ./scripts/publish.sh myFunc adam"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.3",
+    "webpack-cli": "^3.3.10",
+    "@types/node": "^12.12.17",
+    "webpack": "^4.41.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.588.0"
+  }
+}
