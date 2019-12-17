@@ -6,8 +6,8 @@
   "scripts": {
     "build": "rm -rf dist ; webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:live": "npm run build ; ./scripts/test.sh dummyKey",
-    "publish": "npm run build ; ./scripts/publish.sh myFunc adam"
+    "test:live": "node -p \"require('./dist/index.js').handler({key1: '$1'}).then(e => console.log(e))\"",
+    "publish": "npm run build ; ./scripts/publish.sh myFunc"
   },
   "author": "",
   "license": "ISC",

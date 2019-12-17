@@ -1,3 +1,5 @@
+import { DynamoDB, AWSError } from "aws-sdk";
+
 /**
  * @license
  * Copyright Adam Eggleston. All Rights Reserved.
@@ -6,14 +8,19 @@
  * found in the LICENSE file
  */
 
-export const fakeServiceGet = (key: String): Promise<String> => {
+export const fakeServiceGet = (dynamo: DynamoDB, key: string): Promise<any[]> => {
+  const queryParams = {
+    TableName: "Watchlist",
+    KeyConditionExpression: "user_id = :uid",
+    ExpressionAttributeValues: { ":uid":{"S":key} }
+  }
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (Math.random() > 0.5) {
-        resolve(`The value of ${key} is "cool boi"`);
+    dynamo.query(queryParams, (err: AWSError, results: DynamoDB.Types.QueryOutput) => {
+      if (err) {
+        reject(err);
       } else {
-        reject(`We found nothing associated with ${key}`);
+        resolve(results.Items);
       }
-    }, 2000);
+    })
   })
 }

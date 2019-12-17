@@ -8,7 +8,7 @@
 
 import { fakeServiceGet } from "./fakeService";
 
-import { DynamoDB } from "aws-sdk";
+import DynamoDB from "aws-sdk/clients/dynamodb";
 
 interface LambdaEvent {
   key1: string;
@@ -22,17 +22,21 @@ exports.handler = async(event: LambdaEvent) => {
     statusCode: 200,
     body: '',
   };
-  response.body = await fakeServiceGet(event.key1).catch(e => {
+  response.body = await fakeServiceGet(dynamo, event.key1).catch(e => {
     response.statusCode = 404;
     return e;
   });
+  response.body = JSON.stringify(response.body);
   return response;
 }
 
 
 const init = () => {
   console.log("I do things before you run the function")
-  dynamo = new DynamoDB();
+  dynamo = new DynamoDB({
+    region: "ap-southeast-2",
+    endpoint: "http://localhost:8000"
+  });
 }
 
 init();
