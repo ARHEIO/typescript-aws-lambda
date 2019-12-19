@@ -12,4 +12,7 @@ It can be written using import statements and typescript, and compiles down to a
 * An IAM account with CLI access
 * JQ (https://formulae.brew.sh/formula/jq) install with `brew install jq` 
 
-Build with
+## Todo
+* Build with environmental files
+* Create models for request and response
+* Parse the event

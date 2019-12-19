@@ -8,18 +8,20 @@ import { DynamoDB, AWSError } from "aws-sdk";
  * found in the LICENSE file
  */
 
-export const fakeServiceGet = (dynamo: DynamoDB, key: string): Promise<any[]> => {
+export const fakeServiceGet = (dynamo: DynamoDB, key: string): Promise<any> => {
   const queryParams = {
-    TableName: "Watchlist",
-    KeyConditionExpression: "user_id = :uid",
+    TableName: "typescript-aws-lambda-dev",
+    KeyConditionExpression: "id = :uid",
     ExpressionAttributeValues: { ":uid":{"S":key} }
   }
   return new Promise((resolve, reject) => {
     dynamo.query(queryParams, (err: AWSError, results: DynamoDB.Types.QueryOutput) => {
       if (err) {
+        console.log(`message='rejected with error' err='${err}'`)
         reject(err);
       } else {
-        resolve(results.Items);
+        console.log(`message='retreived item' item='${results.Items}'`)
+        resolve(results.Items[0]);
       }
     })
   })

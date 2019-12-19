@@ -1,7 +1,14 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
+  externals: [
+    nodeExternals({
+      whitelist: [/^((?!aws-sdk).)*$/] // aws-sdk is provided in the lambda environment
+    })
+  ],
   module: {
     rules: [
       {
@@ -15,7 +22,11 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
   optimization: {
-    minimize: false
+    minimize: true,
+    minimizer: [
+      new TerserPlugin(),
+    ],
+    concatenateModules: true
   },
   output: {
     filename: 'index.js',

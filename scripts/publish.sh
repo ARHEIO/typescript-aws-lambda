@@ -1,10 +1,11 @@
 #!/bin/bash
 
-lambdaName=${PWD##*/}
+# lambdaName=${PWD##*/}
 
-rm index.zip
-cd dist
-zip -X -r ../index.zip *
-cd ..
-aws lambda update-function-code --region ap-southeast-2 --function-name $lambdaName --zip-file fileb://index.zip
-rm index.zip
+# rm index.zip
+# cd dist
+# zip -X -r ../index.zip *
+# cd ..
+serverless deploy
+# aws lambda update-function-code --region ap-southeast-2 --function-name $lambdaName --zip-file fileb://index.zip
+# rm index.zip

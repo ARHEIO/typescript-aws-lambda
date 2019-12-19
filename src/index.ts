@@ -7,27 +7,30 @@
  */
 
 import { fakeServiceGet } from "./fakeService";
+import cloneDeep = require('lodash/cloneDeep')
 
 import DynamoDB from "aws-sdk/clients/dynamodb";
-
-interface LambdaEvent {
-  key1: string;
-}
+import { ProxyRequest, LambdaEvent } from "./models/proxy-request.model";
 
 let dynamo: DynamoDB;
 
-exports.handler = async(event: LambdaEvent) => {
-  console.log("I'm the db endpoint", dynamo.config.endpoint);
-  const response = {
-    statusCode: 200,
-    body: '',
-  };
-  response.body = await fakeServiceGet(dynamo, event.key1).catch(e => {
-    response.statusCode = 404;
-    return e;
-  });
-  response.body = JSON.stringify(response.body);
-  return response;
+export const handler = async(event: ProxyRequest) => {
+  const promise = new Promise(async resolve => {
+    const body: LambdaEvent = JSON.parse(event.body);
+    const response = {
+      statusCode: 200,
+      body: '',
+    };
+    try {
+      const firstItem = await fakeServiceGet(dynamo, body.key1);
+      response.body = cloneDeep(firstItem);
+    } catch (error) {
+      response.body = error;
+    }
+    response.body = JSON.stringify(response.body);
+    resolve(response);
+  })
+  return promise;
 }
 
 
@@ -35,7 +38,8 @@ const init = () => {
   console.log("I do things before you run the function")
   dynamo = new DynamoDB({
     region: "ap-southeast-2",
-    endpoint: "http://localhost:8000"
+    endpoint: "https://dynamodb.ap-southeast-2.amazonaws.com"
+    // endpoint: "http://localhost:8000"
   });
 }
 

@@ -3,11 +3,16 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "sourceMap": false,
-    "module": "es6",
+    "module": "commonjs",
     "target": "es5",
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
     "jsx": "react",
     "allowJs": true,
-    "types" : ["node"],
+    "types" : [
+      "node",
+      "aws-sdk"
+    ],
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "lib": [
