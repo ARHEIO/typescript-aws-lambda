@@ -6,31 +6,35 @@
  * found in the LICENSE file
  */
 
-import { fakeServiceGet } from "./fakeService";
+import DynamoDB from "aws-sdk/clients/dynamodb";
 import cloneDeep = require('lodash/cloneDeep')
 
-import DynamoDB from "aws-sdk/clients/dynamodb";
-import { ProxyRequest, LambdaEvent } from "./models/proxy-request.model";
+import { fakeServiceGet } from "../common/fakeService";
+import { ProxyRequest } from "../common/models/proxy-request.model";
 
 let dynamo: DynamoDB;
 
 export const handler = async(event: ProxyRequest) => {
-  const promise = new Promise(async resolve => {
-    const body: LambdaEvent = JSON.parse(event.body);
+  return new Promise(async resolve => {
     const response = {
       statusCode: 200,
       body: '',
     };
-    try {
-      const firstItem = await fakeServiceGet(dynamo, body.key1);
-      response.body = cloneDeep(firstItem);
-    } catch (error) {
-      response.body = error;
+    const params = event.queryStringParameters;
+    if (params && params.q && params.q !== "") {
+      try {
+        const firstItem = await fakeServiceGet(dynamo, params.q);
+        response.body = JSON.stringify(cloneDeep(firstItem));
+      } catch (error) {
+        response.body = error;
+      }
+    } else {
+      response.statusCode = 400;
+      response.body = JSON.stringify({ message: "incorrect params" })
     }
-    response.body = JSON.stringify(response.body);
+
     resolve(response);
   })
-  return promise;
 }
 
 
