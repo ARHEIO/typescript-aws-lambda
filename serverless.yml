@@ -10,6 +10,7 @@ package:
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: ${opt:stage,'dev'}
   region: ap-southeast-2
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
@@ -24,11 +25,15 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
+custom:
+  stages:
+    - dev
+    - staging
+    - prod
+
 functions:
   todo-get:
     handler: dist/get.handler
-    environment:
-      NODE_ENV: production
     package:
       include:
         - dist/get.js
@@ -39,11 +44,9 @@ functions:
           cors: true
   todo-create:
     handler: dist/post.handler
-    environment:
-      NODE_ENV: production
     package:
       include:
-        - dist/post.js
+        - dist/get.js
     events:
       - http:
           path: todos
