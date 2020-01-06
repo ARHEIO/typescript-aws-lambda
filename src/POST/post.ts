@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright Adam Eggleston. All Rights Reserved.
@@ -6,13 +7,12 @@
  * found in the LICENSE file
  */
 
-import DynamoDB from "aws-sdk/clients/dynamodb";
 import cloneDeep = require('lodash/cloneDeep')
 
-import { fakeServiceGet } from "../common/fakeService";
+import { DynamoService } from "../common/DynamoService";
 import { ProxyRequest, LambdaEvent } from "../common/models/proxy-request.model";
 
-let dynamo: DynamoDB;
+let dynamo: DynamoService;
 
 export const handler = async(event: ProxyRequest) => {
   const promise = new Promise(async resolve => {
@@ -22,7 +22,7 @@ export const handler = async(event: ProxyRequest) => {
       body: '',
     };
     try {
-      const firstItem = await fakeServiceGet(dynamo, body.key1);
+      const firstItem = await dynamo.getItem(body.key1);
       response.body = cloneDeep(firstItem);
     } catch (error) {
       response.body = error;
@@ -36,11 +36,10 @@ export const handler = async(event: ProxyRequest) => {
 
 const init = () => {
   console.log("I do things before you run the function")
-  dynamo = new DynamoDB({
-    region: "ap-southeast-2",
-    endpoint: "https://dynamodb.ap-southeast-2.amazonaws.com"
-    // endpoint: "http://localhost:8000"
-  });
+  const settings = process.env.NODE_ENV != 'prodiction'
+    ? { endpoints: { dynamo: "https://dynamodb.ap-southeast-2.amazonaws.com" } }
+    : { endpoints: { dynamo: "http://localhost:8000" } };
+  dynamo = new DynamoService(settings);
 }
 
 init();

@@ -4,7 +4,7 @@
   "description": "A base package for lambdas that compiles to javascript",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist ; webpack",
+    "build": "rm -rf dist ; webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:live": "./scripts/test.sh",
     "test:build": "npm run build ; ./scripts/test.sh",
@@ -16,7 +16,7 @@
     "@types/aws-sdk": "^2.7.0",
     "@types/lodash": "^4.14.149",
     "@types/node": "^12.12.17",
-    "serverless": "^1.60.0",
+    "serverless": "^1.60.5",
     "terser-webpack-plugin": "^2.3.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.3",

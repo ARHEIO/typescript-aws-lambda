@@ -27,6 +27,8 @@ provider:
 functions:
   todo-get:
     handler: dist/get.handler
+    environment:
+      NODE_ENV: production
     package:
       include:
         - dist/get.js
@@ -37,9 +39,11 @@ functions:
           cors: true
   todo-create:
     handler: dist/post.handler
+    environment:
+      NODE_ENV: production
     package:
       include:
-        - dist/get.js
+        - dist/post.js
     events:
       - http:
           path: todos
