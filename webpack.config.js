@@ -4,8 +4,10 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: {
-    get: './src/GET/get.ts',
-    post: './src/POST/post.ts',
+    deleteList: './src/deleteList/deleteList.ts',
+    getBooks: './src/getBooks/getBooks.ts',
+    getList: './src/getList/getList.ts',
+    patchList: './src/patchList/patchList.ts',
   },
   externals: [
     nodeExternals({

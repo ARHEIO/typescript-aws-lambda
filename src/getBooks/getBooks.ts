@@ -6,13 +6,11 @@
  * found in the LICENSE file
  */
 
-import DynamoDB from "aws-sdk/clients/dynamodb";
 import cloneDeep = require('lodash/cloneDeep')
+import { ProxyRequest } from "../app/proxy-request.model";
+import { BooksService } from '../app/BooksService/BooksService';
 
-import { DynamoService } from "../common/DynamoService";
-import { ProxyRequest } from "../common/models/proxy-request.model";
-
-let dynamo: DynamoService;
+let booksService: BooksService;
 
 export const handler = async(event: ProxyRequest) => {
   return new Promise(async resolve => {
@@ -23,15 +21,15 @@ export const handler = async(event: ProxyRequest) => {
     const params = event.queryStringParameters;
     if (params && params.q && params.q !== "") {
       try {
-        const firstItem = await dynamo.getItem(params.q);
-        response.body = JSON.stringify(cloneDeep(firstItem));
+        const firstItem = await booksService.searchForBooks(params.q);
+        response.body = JSON.stringify(cloneDeep(firstItem.data));
       } catch (error) {
         response.body = error;
       }
     } else {
       response.statusCode = 400;
       response.body = JSON.stringify({ message: "incorrect params" })
-    }
+    } 
 
     resolve(response);
   })
@@ -40,10 +38,7 @@ export const handler = async(event: ProxyRequest) => {
 
 const init = () => {
   console.log("I do things before you run the function")
-  const settings = process.env.NODE_ENV != 'prodiction'
-  ? { endpoints: { dynamo: "https://dynamodb.ap-southeast-2.amazonaws.com" } }
-  : { endpoints: { dynamo: "http://localhost:8000" } };
-  dynamo = new DynamoService(settings);
+  booksService = new BooksService();
 }
 
 init();

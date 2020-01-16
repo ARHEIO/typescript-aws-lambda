@@ -21,3 +21,36 @@ It can be written using import statements and typescript, and compiles down to a
 * Build with environmental files
 * Create models for request and response
 * Parse the event
+
+
+# Endpoints
+
+`GET /bookreviewer/books?q=${searchTerm}`
+
+To find books, doesn't require a key or account
+Return body includes book ID, required for put
+
+
+`GET /bookreviewer/list?q=${useremail}` (for now)
+
+Gets a user's booklist
+
+
+`PATCH /bookreviewer/list`
+```
+{
+  "op": "ADD", // one of "ADD", "CHANGE"
+  "location": "{bookId}"
+  "value": "{bookRating}" // an integer
+}
+```
+Patches a book in a user list, either adding it, deleting it, or changing it
+
+
+`DELETE /bookreviewer/list/${bookID}`
+
+
+
+# Dynamo Structure
+
+

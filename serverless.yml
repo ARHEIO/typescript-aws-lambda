@@ -1,4 +1,4 @@
-service: typescript-aws-lambda
+service: bookreviewer
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -32,30 +32,50 @@ custom:
     - prod
 
 functions:
-  todo-get:
-    handler: dist/get.handler
+  deleteList:
+    handler: dist/deleteList.handler
     package:
       include:
-        - dist/get.js
+        - dist/deleteList.js
     events:
       - http:
-          path: todos
+          path: bookreviewer/list/{id}
+          method: delete
+          cors: true
+  getBooks:
+    handler: dist/getBooks.handler
+    package:
+      include:
+        - dist/getBooks.js
+    events:
+      - http:
+          path: bookreviewer/books
           method: get
           cors: true
-  todo-create:
-    handler: dist/post.handler
+  getList:
+    handler: dist/getList.handler
     package:
       include:
-        - dist/get.js
+        - dist/getList.js
     events:
       - http:
-          path: todos
-          method: post
+          path: bookreviewer/list
+          method: get
+          cors: true
+  patchList:
+    handler: dist/patchList.handler
+    package:
+      include:
+        - dist/patchList.js
+    events:
+      - http:
+          path: bookreviewer/list
+          method: patch
           cors: true
 
 resources:
   Resources:
-    TodosDynamoDbTable:
+    BookReviewerDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:

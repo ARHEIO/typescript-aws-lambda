@@ -1,4 +1,3 @@
-
 /**
  * @license
  * Copyright Adam Eggleston. All Rights Reserved.
@@ -9,8 +8,8 @@
 
 import cloneDeep = require('lodash/cloneDeep')
 
-import { DynamoService } from "../common/DynamoService";
-import { ProxyRequest, LambdaEvent } from "../common/models/proxy-request.model";
+import { ProxyRequest, LambdaEvent } from '../app/proxy-request.model';
+import { DynamoService } from '../app/DatabaseService/DynamoService';
 
 let dynamo: DynamoService;
 
@@ -22,7 +21,7 @@ export const handler = async(event: ProxyRequest) => {
       body: '',
     };
     try {
-      const firstItem = await dynamo.getItem(body.key1);
+      const firstItem = await dynamo.getList(body.key1);
       response.body = cloneDeep(firstItem);
     } catch (error) {
       response.body = error;
